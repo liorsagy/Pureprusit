@@ -58,22 +58,27 @@ public class testPath extends OpMode {
     public void loop() {
 
         ArrayList<CurvePoint> allPoint = new ArrayList<>();
-        allPoint.add(new CurvePoint(0,2500,1.0,1.0,50.0,Math.toRadians(50),1.0));
         allPoint.add(new CurvePoint(2500,0,1.0,1.0,50.0,Math.toRadians(50),1.0));
-        //allPoint.add(new CurvePoint(0,50,1.0,1.0,50.0,Math.toRadians(50),1.0));
+        allPoint.add(new CurvePoint(0,2500,1.0,1.0,50.0,Math.toRadians(50),1.0));
+        //allPoint.add(new CurvePoint(0,2500,1.0,1.0,50.0,Math.toRadians(50),1.0));
+        //allPoint.add(new CurvePoint(0,0,1.0,1.0,50.0,Math.toRadians(50),1.0));
+        //allPoint.add(new CurvePoint(2500,2500,1.0,1.0,50.0,Math.toRadians(50),1.0));
 
+        while (true){
+            CurvePoint follow = RobotMonement.followCurve(allPoint, Math.toRadians(180), lf, rf,lb,rb,imu);
+            //goToPosition(follow.x,follow.y,follow.moveSpeed, 0,follow.turnSpeed, lf, rf, lb, rb, imu);
 
-        CurvePoint follow = RobotMonement.followCurve(allPoint, Math.toRadians(0), lf, rf,lb,rb,imu);
+            telemetry.addData("x", follow.x);
+            telemetry.addData("y", follow.y);
+            telemetry.addData("distace", Math.hypot(follow.x- worldXPosition, follow.y- worldYPosition));
 
-        telemetry.addData("x", follow.x);
-        telemetry.addData("y", follow.y);
-        telemetry.addData("distance", follow.followDistance);
+            telemetry.addData("world","");
+            telemetry.addData("x", worldXPosition);
+            telemetry.addData("y", worldYPosition);
+            telemetry.addData("angle", worldAngle_rad);
+            telemetry.update();
+        }
 
-        telemetry.addData("","world");
-        telemetry.addData("x", worldXPosition);
-        telemetry.addData("y", worldYPosition);
-        telemetry.addData("angle", worldAngle_rad);
-        //RobotMonement.goToPosition(1000,1000,1.0,Math.toRadians(0), 1.0, lf,rf,lb,rb,imu);
 
     }
 

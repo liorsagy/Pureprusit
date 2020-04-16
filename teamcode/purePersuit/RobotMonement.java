@@ -35,28 +35,28 @@ public class RobotMonement{
                                    BNO055IMU imu){
 
         RobotMonement.setWorldPosition(lf,rf,lb,rb,imu);
-        CurvePoint followMe = getFollowPointPath(allPoints , new point(worldXPosition, worldYPosition), allPoints.get(0 ).followDistance, lf,rf,lb,rb,imu);
-        goToPosition(followMe.x,followMe.y,followMe.moveSpeed, followAngle,followMe.turnSpeed, lf, rf, lb, rb, imu);
+        CurvePoint followMe = getFollowPointPath(allPoints , new point(worldXPosition, worldYPosition), allPoints.get(0).followDistance, lf,rf,lb,rb,imu);
+        goToPosition(followMe.x,followMe.y,followMe.moveSpeed,followAngle,followMe.turnSpeed,lf,rf,lb,rb,imu);
         return followMe;
     }
 
     public static CurvePoint getFollowPointPath(ArrayList< CurvePoint> pathPoints, point robotlocation, double followRadius, DcMotor lf, DcMotor rf, DcMotor lb, DcMotor rb, BNO055IMU imu){
-
-        CurvePoint followMe = new CurvePoint(pathPoints.get(0));
-
+         CurvePoint followMe = new CurvePoint(pathPoints.get(0));
         for(int i = 0 ; i < pathPoints.size()-1 ; i ++ ) {
+
             CurvePoint startLine = pathPoints.get(i);
             CurvePoint endLine = pathPoints.get( i +1 );
 
-            ArrayList<point> intrectionx  = MathFunction.lineCircleintersaction(robotlocation , followRadius , startLine.toPoint(), endLine.toPoint());
+            ArrayList<point> intersections  = MathFunction.lineCircleintersaction(robotlocation , followRadius , startLine.toPoint(), endLine.toPoint());
+
 
             double closetAngle = 100000000;
-            for (point thisintractiox : intrectionx){
-                double angle = Math.atan2(thisintractiox.x - worldXPosition, thisintractiox.y - worldYPosition);
+            for (point thisIntersections : intersections){
+                double angle = Math.atan2(thisIntersections.y - worldYPosition, thisIntersections.x - worldYPosition);
                 double deltaAngle = Math.abs(MathFunction.AngelWarp(angle - worldAngle_rad));
                 if ( deltaAngle < closetAngle){
                     closetAngle = deltaAngle;
-                    followMe.setPoint(thisintractiox);
+                    followMe.setPoint(thisIntersections);
                 }
             }
 
@@ -94,7 +94,9 @@ public class RobotMonement{
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
 
         double movement_turn = Range.clip(relativeTurnAngle / Math.toRadians(10),-1,1) * turnSpeed;
-        if (distanceToTarget < 10){
+        if (distanceToTarget < 50){
+            movement_y = 0;
+            movement_x = 0;
             movement_turn = 0;
         }
 
